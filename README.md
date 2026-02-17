@@ -12,3 +12,5 @@
 ## History 
 
 This is a fork of jhotdraw from http://sourceforge.net/projects/jhotdraw.
+
+## Group 12 - IntroLab test branch
