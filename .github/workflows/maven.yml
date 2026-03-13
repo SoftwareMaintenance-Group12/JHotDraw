@@ -33,7 +33,7 @@ jobs:
         
     # Step 3: Build the project using Maven
     - name: Build with Maven
-      run: mvn -B verify --file pom.xml
+      run: mvn -B verify --settings .maven-settings.xml
     # verify runs the full Maven lifecycle including compilation and tests
 
     # Step 4: Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
