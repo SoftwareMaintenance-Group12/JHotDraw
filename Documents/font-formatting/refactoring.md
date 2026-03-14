@@ -660,6 +660,113 @@ After refactoring, the method reads more like a high-level algorithm:
 This makes the code easier to understand and better aligned with the refactoring principles in [Ker05].
 
 ## `DefaultFontChooserModel`
+
+### Issue: Long Method and Magic String Lists in `setFonts(Font[] fonts)`
+
+The method `setFonts(Font[] fonts)` originally contained **too much setup logic in one place** and embedded long lists of font names directly inside the method body.
+
+This creates two related maintainability problems:
+
+- **Long Method**: the method is responsible for collecting families, sorting them, clearing the tree, and building many font collections.
+- **Magic Strings / Data Clumps**: hard-coded font-name lists are repeated inline, which makes the method harder to read and harder to maintain.
+
+A very visible example is the list of web-safe fonts being written directly inside the `root.add(...)` call.
+
+---
+
+### Before
+
+```before
+root.add(
+        new FontCollectionNode(labels.getString("FontCollection.web"), collectFamiliesNamed(families,
+                "Arial",
+                "Arial Black",
+                "Comic Sans MS",
+                "Georgia",
+                "Impact",
+                "Times New Roman",
+                "Trebuchet MS",
+                "Verdana",
+                "Webdings")));
+```
+
+The font list is embedded directly in the method body, making the code verbose and less intention-revealing.
+
+---
+
+### Refactoring Applied
+
+**Replace Magic Values with Symbolic Constant**
+
+The inline list was extracted into a named constant:
+
+```java
+private static final String[] WEB_SAFE_FONTS = {
+        "Arial",
+        "Arial Black",
+        "Comic Sans MS",
+        "Georgia",
+        "Impact",
+        "Times New Roman",
+        "Trebuchet MS",
+        "Verdana",
+        "Webdings"
+};
+```
+
+and the method now uses that constant.
+
+---
+
+### After
+
+```after
+private static final String[] WEB_SAFE_FONTS = {
+        "Arial",
+        "Arial Black",
+        "Comic Sans MS",
+        "Georgia",
+        "Impact",
+        "Times New Roman",
+        "Trebuchet MS",
+        "Verdana",
+        "Webdings"
+};
+
+...
+
+root.add(new FontCollectionNode(
+        labels.getString("FontCollection.web"),
+        collectFamiliesNamed(families, WEB_SAFE_FONTS)));
+```
+
+---
+
+### Result
+
+This refactoring improves the code in several ways:
+
+- removes a long inline literal list from the method body
+- makes the purpose of the list explicit through a meaningful name
+- improves readability of `setFonts(...)`
+- makes future maintenance easier, because the font set can be updated in one place
+
+This follows the idea of replacing hard-coded values with a **symbolic constant**, which is consistent with the refactoring principles in [Ker05].
+
+---
+
+### Note on Further Improvement
+
+This is only a first step.  
+The full `setFonts(...)` method is still quite large because it builds many different font collections in one place.
+
+A possible future improvement would be to continue with:
+
+- **Extract Method** for building each collection
+- or moving each font-category list into named constants
+
+That would further reduce the complexity of the method and make the structure of the model-building code easier to understand.
+
 ## `SVGAttributedFigure`
 ## `AbstractAttributedFigure`
 ## `SVGAttributeKeys`

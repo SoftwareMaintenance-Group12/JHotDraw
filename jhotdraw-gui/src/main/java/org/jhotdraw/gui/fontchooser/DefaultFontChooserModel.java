@@ -40,6 +40,18 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
      */
     protected DefaultMutableTreeNode root;
 
+    private static final String[] WEB_SAFE_FONTS = {
+            "Arial",
+            "Arial Black",
+            "Comic Sans MS",
+            "Georgia",
+            "Impact",
+            "Times New Roman",
+            "Trebuchet MS",
+            "Verdana",
+            "Webdings"
+    };
+
     public DefaultFontChooserModel() {
         root = new DefaultMutableTreeNode();
     }
@@ -54,13 +66,12 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
      * <p>
      * Fires treeStructureChanged event on the root node.
      *
-     * @param fonts
+     * @param fonts blabla
      */
     @SuppressWarnings("unchecked")
     public void setFonts(Font[] fonts) {
         ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.gui.Labels");
         // collect families and sort them alphabetically
-        ArrayList<FontFamilyNode> families = new ArrayList<>();
         HashMap<String, FontFamilyNode> familyMap = new HashMap<>();
         for (Font f : fonts) {
             String familyName = f.getFamily();
@@ -73,34 +84,16 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
             }
             family.add(new FontFaceNode(f));
         }
-        families.addAll(familyMap.values());
+        ArrayList<FontFamilyNode> families = new ArrayList<>(familyMap.values());
         Collections.sort(families);
         // group families into collections
         root.removeAllChildren();
         root.add(new FontCollectionNode(labels.getString("FontCollection.allFonts"), (ArrayList<FontFamilyNode>) families.clone()));
         // Web-save fonts
-        root.add(
-                new FontCollectionNode(labels.getString("FontCollection.web"), collectFamiliesNamed(families,
-                        "Arial",
-                        "Arial Black",
-                        "Comic Sans MS",
-                        "Georgia",
-                        "Impact",
-                        "Times New Roman",
-                        "Trebuchet MS",
-                        "Verdana",
-                        "Webdings")));
-        /*
-        // PDF Fonts
-        root.add(
-        new FontCollectionNode(labels.getString("FontCollection.pdf"), collectFamiliesNamed(families,
-        "Andale Mono",
-        "Courier",
-        "Helvetica",
-        "Symbol",
-        "Times",
-        "Zapf Dingbats")));
-         */
+        root.add(new FontCollectionNode(
+                labels.getString("FontCollection.web"),
+                collectFamiliesNamed(families, WEB_SAFE_FONTS)));
+
         // Java System fonts
         root.add(
                 new FontCollectionNode(labels.getString("FontCollection.system"), collectFamiliesNamed(families,
@@ -505,7 +498,6 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
         HashSet<String> nameMap = new HashSet<>();
         nameMap.addAll(Arrays.asList(names));
         for (FontFamilyNode family : families) {
-            String fName = family.getName();
             if (nameMap.contains(family.getName())) {
                 coll.add(family.clone());
             }
