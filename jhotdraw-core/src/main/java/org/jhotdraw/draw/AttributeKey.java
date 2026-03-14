@@ -35,6 +35,7 @@ import org.jhotdraw.util.*;
 public class AttributeKey<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final String CLONE_METHOD_NAME = "clone";
     /**
      * Holds a String representation of the attribute key.
      */
@@ -42,7 +43,7 @@ public class AttributeKey<T> implements Serializable {
     /**
      * Holds the default value.
      */
-    private T defaultValue;
+    private transient T defaultValue;
     /**
      * Specifies whether null values are allowed.
      */
@@ -135,7 +136,7 @@ public class AttributeKey<T> implements Serializable {
     public T getClone(Figure f) {
         T value = f.get(this);
         try {
-            return value == null ? null : clazz.cast(Methods.invoke(value, "clone"));
+            return value == null ? null : clazz.cast(Methods.invoke(value, CLONE_METHOD_NAME));
         } catch (NoSuchMethodException ex) {
             InternalError e = new InternalError();
             e.initCause(ex);
@@ -197,7 +198,7 @@ public class AttributeKey<T> implements Serializable {
         }
         final Object restoreData = f.getAttributesRestoreData();
         f.set(this, value);
-        UndoableEdit edit = new AbstractUndoableEdit() {
+        return new AbstractUndoableEdit() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -221,7 +222,6 @@ public class AttributeKey<T> implements Serializable {
                 f.changed();
             }
         };
-        return edit;
     }
 
     /**
@@ -236,7 +236,7 @@ public class AttributeKey<T> implements Serializable {
      */
     public void setClone(Figure f, T value) {
         try {
-            f.set(this, value == null ? null : clazz.cast(Methods.invoke(value, "clone")));
+            f.set(this, value == null ? null : clazz.cast(Methods.invoke(value, CLONE_METHOD_NAME)));
         } catch (NoSuchMethodException ex) {
             InternalError e = new InternalError();
             e.initCause(ex);
@@ -252,7 +252,7 @@ public class AttributeKey<T> implements Serializable {
      */
     public void putClone(Map<AttributeKey<?>, Object> a, T value) {
         try {
-            put(a, value == null ? null : clazz.cast(Methods.invoke(value, "clone")));
+            put(a, value == null ? null : clazz.cast(Methods.invoke(value, CLONE_METHOD_NAME)));
         } catch (NoSuchMethodException ex) {
             InternalError e = new InternalError();
             e.initCause(ex);

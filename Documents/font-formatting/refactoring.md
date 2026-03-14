@@ -1,10 +1,22 @@
 # Refactoring - Lab4
-Is to improve code maintainability, readability, and robustness by identifying and addressing code smells
+
+The goal of this lab is to improve **code maintainability, readability, and robustness** by identifying code smells and applying behavior-preserving refactorings.
+
+The refactoring work focuses on the **font formatting feature** of JHotDraw.  
+The identified smells and refactorings follow the principles described in **[Ker05] – Refactoring to Patterns**.
+
+---
 
 # Refactoring by class
-## `FontChooserHandler` 
-### Issue: nested if in `propertyChange(PropertyChangeEvent evt)`
+
+---
+
+# `FontChooserHandler`
+
+## Issue: nested if in `propertyChange(PropertyChangeEvent evt)`
+
 The method originally used *nested conditional statements*, which made the logic harder to read and understand.
+
 ```before
 @Override
 public void propertyChange(PropertyChangeEvent evt) {
@@ -17,7 +29,12 @@ public void propertyChange(PropertyChangeEvent evt) {
     isUpdating--;
 }
 ```
-Refactoring Applied: *Consolidate Conditional Expression* - The nested condition was merged into a single expression.
+
+### Refactoring Applied
+**Consolidate Conditional Expression**
+
+The nested condition was merged into a single expression.
+
 ```after
 @Override
 public void propertyChange(PropertyChangeEvent evt) {
@@ -30,11 +47,20 @@ public void propertyChange(PropertyChangeEvent evt) {
     isUpdating--;
 }
 ```
-Result: follows the principle of simplifying conditional logic as recommended in [Ker05] - *Refactoring to Patterns*.
-Reduced nesting, Improved readability, Clearer control flow.
 
-## `SVGTextFigure`
-### Issue: redundant temporary variable in `getTool(Point2D.Double p)`
+### Result
+
+- Reduced nesting
+- Improved readability
+- Clearer control flow
+
+This follows the principle of simplifying conditional logic described in **[Ker05] Refactoring to Patterns**.
+
+---
+
+# `SVGTextFigure`
+
+## Issue: redundant temporary variable in `getTool(Point2D.Double p)`
 
 The method introduced a *temporary variable that was immediately returned*.  
 This creates unnecessary code and reduces readability.
@@ -50,7 +76,8 @@ public Tool getTool(Point2D.Double p) {
 }
 ```
 
-Refactoring Applied: *Inline Temporary Variable*
+### Refactoring Applied
+**Inline Temporary Variable**
 
 ```after
 @Override
@@ -61,13 +88,18 @@ public Tool getTool(Point2D.Double p) {
     return null;
 }
 ```
-Result: removes unnecessary variable, simplifies the method and improves readability as suggested in [Ker05].
+
+### Result
+
+- Removes unnecessary variable
+- Simplifies the method
+- Improves readability
+
 ---
 
-### Issue: unsafe boolean condition when checking underline attribute
+## Issue: unsafe boolean condition when checking underline attribute
 
-The original code assumed that the attribute value was always non-null.  
-However attributes in JHotDraw may return `null`, which could lead to fragile behavior.
+The original code assumed that the attribute value was always non-null.
 
 ```before
 if (get(FONT_UNDERLINE)) {
@@ -75,7 +107,8 @@ if (get(FONT_UNDERLINE)) {
 }
 ```
 
-Refactoring Applied: *Introduce Null-Safe Boolean Check*
+### Refactoring Applied
+**Introduce Null-Safe Boolean Check**
 
 ```after
 if (Boolean.TRUE.equals(get(FONT_UNDERLINE))) {
@@ -83,15 +116,14 @@ if (Boolean.TRUE.equals(get(FONT_UNDERLINE))) {
 }
 ```
 
-Result: improves robustness by avoiding potential null dereference and making the condition safer.
+### Result
 
+- Prevents potential `NullPointerException`
+- Improves robustness
 
 ---
 
-### Issue: verbose empty string checks
-
-The code used the older pattern `text.length() == 0` to check for empty strings.  
-This reduces readability and is less idiomatic in modern Java.
+## Issue: verbose empty string checks
 
 ```before
 String text = getText();
@@ -100,7 +132,8 @@ if (text == null || text.length() == 0) {
 }
 ```
 
-Refactoring Applied: *Replace Expression with Intention-Revealing Method*
+### Refactoring Applied
+**Replace Expression with Intention-Revealing Method**
 
 ```after
 String text = getText();
@@ -109,14 +142,13 @@ if (text == null || text.isEmpty()) {
 }
 ```
 
-Result: clearer intention and improved readability.
+### Result
 
+Improves readability and expresses the intent more clearly.
 
 ---
 
-### Issue: inconsistent use of attribute keys
-
-The class used both `SVGAttributeKeys` and `AttributeKeys` for attributes that belong to the general attribute system.
+## Issue: inconsistent use of attribute keys
 
 ```before
 if (key.equals(SVGAttributeKeys.TRANSFORM)
@@ -128,7 +160,8 @@ if (key.equals(SVGAttributeKeys.TRANSFORM)
 }
 ```
 
-Refactoring Applied: *Use Consistent Abstraction*
+### Refactoring Applied
+**Use Consistent Abstraction**
 
 ```after
 if (key.equals(AttributeKeys.TRANSFORM)
@@ -140,15 +173,13 @@ if (key.equals(AttributeKeys.TRANSFORM)
 }
 ```
 
-Result: improves abstraction consistency and reduces unnecessary dependency on SVG-specific keys.
+### Result
 
+Reduces unnecessary dependency on SVG-specific keys.
 
 ---
 
-### Issue: switch statement without default branch
-
-The `switch` statement handling `detailLevel` did not include a default branch.  
-Although the expected values are controlled, explicitly handling unexpected values improves defensive programming.
+## Issue: switch statement without default branch
 
 ```before
 switch (level) {
@@ -164,7 +195,8 @@ switch (level) {
 }
 ```
 
-Refactoring Applied: *Add Explicit Default Case*
+### Refactoring Applied
+**Add Explicit Default Case**
 
 ```after
 switch (level) {
@@ -183,101 +215,25 @@ switch (level) {
 }
 ```
 
-Result: improves robustness and clarifies fallback behavior.
+### Result
 
-
----
-
-# Larger Code Smells Identified (Future Refactoring)
-
-During inspection of the feature area, some **larger design issues** were also identified but were not refactored in this lab.
-
-## Duplicated behavior in text figure classes
-
-Classes such as:
-
-- `SVGTextFigure`
-- `SVGTextAreaFigure`
-
-share similar responsibilities for:
-
-- text content management
-- font attribute handling
-- editing behavior
-- attribute invalidation
-
-This suggests a potential **Extract Superclass** refactoring.
-
-Possible improvement:
-
-```
-AbstractSVGTextFigure
-```
-
-Benefits:
-
-- reduce duplicated logic
-- centralize shared behavior
-- improve maintainability
-
+Improves robustness and makes fallback behavior explicit.
 
 ---
 
-## Multiple responsibilities in `FontChooserHandler`
+# `SVGTextAreaFigure`
 
-`FontChooserHandler` currently performs several tasks:
+## Issue: Long Method in `getTextShape()`
 
-- listening to UI events
-- applying fonts to figures
-- updating editor defaults
-- managing undoable edits
+The method originally contained a **very large block of logic** performing many responsibilities:
 
-This suggests the class may violate the **Single Responsibility Principle**.
-
-Possible refactorings:
-
-- *Extract Method*
-- *Extract Class*
-
-Benefits:
-
-- clearer separation of concerns
-- easier testing and maintenance
-
-
----
-
-# Conclusion
-
-The refactorings performed in this lab focused on improving **maintainability, readability, and robustness** of the font formatting feature.
-
-The applied refactorings include:
-
-- *Consolidate Conditional Expression*
-- *Inline Temporary Variable*
-- *Introduce Null-Safe Boolean Check*
-- *Use Consistent Attribute Abstraction*
-
-All refactorings preserve the original system behavior while improving the internal structure of the code, which aligns with the principles described in **[Ker05] Refactoring to Patterns**.
-
-## `SVGTextAreaFigure`
-
-### Issue: Long Method in `getTextShape()`
-
-The method `getTextShape()` originally contained **a very large block of logic** responsible for:
-
-- preparing layout parameters
+- computing layout parameters
 - computing tab stops
-- iterating over text paragraphs
-- building attributed text
+- iterating over paragraphs
 - performing line layout
 - appending shapes
 
-This resulted in a **long and complex method**, which is a classic code smell described in Chapter 4 of [Ker05].
-
-Large methods are difficult to read, understand, and maintain because they mix multiple responsibilities in a single block of code.
-
----
+This is a classic **Long Method** smell from **[Ker05]**.
 
 ### Before
 
@@ -295,45 +251,32 @@ private Shape getTextShape() {
                     bounds.y + insets.top,
                     bounds.width - insets.left - insets.right,
                     bounds.height - insets.top - insets.bottom);
-
             float leftMargin = (float) textRect.x;
             float rightMargin = (float) Math.max(leftMargin + 1, textRect.x + textRect.width);
             float verticalPos = (float) textRect.y;
             float maxVerticalPos = (float) (textRect.y + textRect.height);
-
             if (leftMargin < rightMargin) {
                 float tabWidth = (float) (getTabSize() * font.getStringBounds("m", getFontRenderContext()).getWidth());
                 float[] tabStops = new float[(int) (textRect.width / tabWidth)];
-
                 for (int i = 0; i < tabStops.length; i++) {
                     tabStops[i] = (float) (textRect.x + (int) (tabWidth * (i + 1)));
                 }
-
                 if (getText() != null) {
                     String[] paragraphs = getText().split("\n");
-
                     for (int i = 0; i < paragraphs.length; i++) {
                         if (paragraphs[i].isEmpty()) {
                             paragraphs[i] = " ";
                         }
-
                         AttributedString as = new AttributedString(paragraphs[i]);
                         as.addAttribute(TextAttribute.FONT, font);
-
                         if (isUnderlined) {
                             as.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_ONE_PIXEL);
                         }
-
                         int tabCount = paragraphs[i].split("\t").length - 1;
-
                         Rectangle2D.Double paragraphBounds = appendParagraph(
                                 shape, as.getIterator(),
-                                verticalPos, maxVerticalPos,
-                                leftMargin, rightMargin,
-                                tabStops, tabCount);
-
+                                verticalPos, maxVerticalPos, leftMargin, rightMargin, tabStops, tabCount);
                         verticalPos = (float) (paragraphBounds.y + paragraphBounds.height);
-
                         if (verticalPos > textRect.y + textRect.height) {
                             break;
                         }
@@ -346,86 +289,11 @@ private Shape getTextShape() {
 }
 ```
 
-This method performs **many responsibilities in one place**, making it difficult to understand.
-
----
-
 ### Refactoring Applied
 
 **Extract Method**
 
-The logic was decomposed into smaller helper methods:
-
-- `createTextRect()`
-- `createTabStops(...)`
-- `appendParagraphs(...)`
-- `layoutLine(...)`
-- `appendLayouts(...)`
-- `findTabLocations(...)`
-- `moveToNextTabStop(...)`
-
----
-
-### After
-
-```after
-private Shape getTextShape() {
-    if (cachedTextShape == null) {
-        Path2D.Double shape;
-        cachedTextShape = shape = new Path2D.Double();
-
-        if (getText() != null || isEditable()) {
-            Font font = getFont();
-            boolean isUnderlined = Boolean.TRUE.equals(get(FONT_UNDERLINE));
-
-            Rectangle2D.Double textRect = createTextRect();
-
-            float leftMargin = (float) textRect.x;
-            float rightMargin = (float) Math.max(leftMargin + 1, textRect.x + textRect.width);
-            float verticalPos = (float) textRect.y;
-            float maxVerticalPos = (float) (textRect.y + textRect.height);
-
-            if (leftMargin < rightMargin) {
-                float[] tabStops = createTabStops(font, textRect);
-
-                if (getText() != null) {
-                    appendParagraphs(
-                        font,
-                        isUnderlined,
-                        shape,
-                        verticalPos,
-                        maxVerticalPos,
-                        leftMargin,
-                        rightMargin,
-                        tabStops,
-                        textRect
-                    );
-                }
-            }
-        }
-    }
-    return cachedTextShape;
-}
-```
-
----
-
-### Result
-
-This refactoring significantly improves code quality:
-
-- reduces method complexity
-- improves readability
-- separates responsibilities
-- makes the code easier to maintain and test
-
-The refactoring follows the **Extract Method** pattern described in [Ker05], which is commonly used to break down large methods into smaller, reusable components.
-
----
-
-### Additional Extracted Helper Methods
-
-To support the refactoring, several helper methods were introduced, including:
+The method was decomposed into helper methods:
 
 ```
 createTextRect()
@@ -437,27 +305,46 @@ findTabLocations(...)
 moveToNextTabStop(...)
 ```
 
-These methods isolate specific responsibilities such as layout computation, paragraph processing, and tab handling, making the overall design cleaner and easier to understand.
+### After
 
-## `JFontChooser`
+```after
+private Shape getTextShape() {
+    if (cachedTextShape == null) {
+        Path2D.Double shape;
+        cachedTextShape = shape = new Path2D.Double();
+        if (getText() != null || isEditable()) {
+            Font font = getFont();
+            boolean isUnderlined = Boolean.TRUE.equals(get(FONT_UNDERLINE));
+            Rectangle2D.Double textRect = createTextRect();
+            float leftMargin = (float) textRect.x;
+            float rightMargin = (float) Math.max(leftMargin + 1, textRect.x + textRect.width);
+            float verticalPos = (float) textRect.y;
+            float maxVerticalPos = (float) (textRect.y + textRect.height);
+            if (leftMargin < rightMargin) {
+                float[] tabStops = createTabStops(font, textRect);
+                if (getText() != null) {
+                    appendParagraphs(font, isUnderlined, shape, verticalPos, maxVerticalPos, leftMargin, rightMargin, tabStops, textRect);
+                }
+            }
+        }
+    }
+    return cachedTextShape;
+}
+```
+### Result
 
-### Issue: Long Method in `updateSelectionPath(Font newValue)`
-
-The method `updateSelectionPath(Font newValue)` originally contained **too much logic in one place**.  
-It handled:
-
-- checking whether an update was needed
-- handling the `null` case
-- extracting the current selection path parts
-- searching in the current family
-- searching in the current collection
-- searching in all collections
-- creating the final `TreePath`
-
-This is a **Long Method** smell from [Ker05].  
-The method had several responsibilities and multiple nested search blocks, which made it harder to read and maintain.
+- reduces complexity
+- separates responsibilities
+- improves readability
+- easier to maintain
 
 ---
+
+# `JFontChooser`
+
+## Issue: Long Method in `updateSelectionPath(Font newValue)`
+
+The original method contained complex nested logic and multiple search loops.
 
 ### Before
 
@@ -476,6 +363,7 @@ protected void updateSelectionPath(Font newValue) {
             FontFamilyNode newFamily = oldFamily;
             FontFaceNode newFace = null;
 
+            // search in the current family
             if (newFace == null && newFamily != null) {
                 for (FontFaceNode face : newFamily.faces()) {
                     if (face.getFont().getFontName().equals(newValue.getFontName())) {
@@ -485,6 +373,7 @@ protected void updateSelectionPath(Font newValue) {
                 }
             }
 
+            // search in the current collection
             if (newFace == null && newCollection != null) {
                 for (FontFamilyNode family : newCollection.families()) {
                     for (FontFaceNode face : family.faces()) {
@@ -497,6 +386,7 @@ protected void updateSelectionPath(Font newValue) {
                 }
             }
 
+            // search in all collections
             if (newFace == null) {
                 TreeNode root = (TreeNode) getModel().getRoot();
                 OuterLoop:
@@ -517,7 +407,7 @@ protected void updateSelectionPath(Font newValue) {
 
             if (newFace != null) {
                 setSelectionPath(new TreePath(new Object[]{
-                    getModel().getRoot(), newCollection, newFamily, newFace
+                        getModel().getRoot(), newCollection, newFamily, newFace
                 }));
             } else {
                 setSelectionPath(null);
@@ -527,34 +417,23 @@ protected void updateSelectionPath(Font newValue) {
 }
 ```
 
-The method mixes decision logic, traversal logic, and result construction in one block.
-
----
-
 ### Refactoring Applied
-
 **Extract Method**
 
-The method was broken into smaller helper methods:
+Helper methods were introduced:
 
-- `needsSelectionPathUpdate(...)`
-- `findFaceInFamily(...)`
-- `findFaceInCollection(...)`
-- `findFaceInAllCollections(...)`
+```
+needsSelectionPathUpdate(...)
+findFaceInFamily(...)
+findFaceInCollection(...)
+findFaceInAllCollections(...)
+```
 
-A small helper class was also introduced:
+A helper class was also introduced:
 
-- `FontPathMatch`
-
-This class groups together:
-
-- `collection`
-- `family`
-- `face`
-
-so the search methods can return a single object instead of updating several variables separately.
-
----
+```
+FontPathMatch
+```
 
 ### After
 
@@ -607,72 +486,19 @@ protected void updateSelectionPath(Font newValue) {
 }
 ```
 
----
-
 ### Result
 
-This refactoring improves the method in several ways:
-
-- reduces method length
-- removes deeply nested search logic
-- makes the intent of each step clearer
-- separates searching responsibilities into focused helper methods
-- improves maintainability and readability
-
-This follows the **Extract Method** refactoring from [Ker05].
+- smaller method
+- clearer algorithm structure
+- improved maintainability
 
 ---
 
-### Additional Helper Structure
+# `DefaultFontChooserModel`
 
-A helper class was introduced to return a complete search result:
+## Issue: Magic String List in `setFonts(Font[] fonts)`
 
-```java
-private static class FontPathMatch {
-    private final FontCollectionNode collection;
-    private final FontFamilyNode family;
-    private final FontFaceNode face;
-
-    private FontPathMatch(FontCollectionNode collection, FontFamilyNode family, FontFaceNode face) {
-        this.collection = collection;
-        this.family = family;
-        this.face = face;
-    }
-}
-```
-
-This makes the search logic cleaner because the caller receives a single object instead of manually tracking multiple related variables.
-
----
-
-### Summary of the Improvement
-
-The original `updateSelectionPath(...)` method was difficult to read because it combined multiple responsibilities in one place.  
-After refactoring, the method reads more like a high-level algorithm:
-
-1. check whether an update is needed
-2. handle the null case
-3. search in the current family
-4. search in the current collection
-5. search in all collections
-6. update the selection path
-
-This makes the code easier to understand and better aligned with the refactoring principles in [Ker05].
-
-## `DefaultFontChooserModel`
-
-### Issue: Long Method and Magic String Lists in `setFonts(Font[] fonts)`
-
-The method `setFonts(Font[] fonts)` originally contained **too much setup logic in one place** and embedded long lists of font names directly inside the method body.
-
-This creates two related maintainability problems:
-
-- **Long Method**: the method is responsible for collecting families, sorting them, clearing the tree, and building many font collections.
-- **Magic Strings / Data Clumps**: hard-coded font-name lists are repeated inline, which makes the method harder to read and harder to maintain.
-
-A very visible example is the list of web-safe fonts being written directly inside the `root.add(...)` call.
-
----
+Font lists were embedded directly inside method calls.
 
 ### Before
 
@@ -690,35 +516,8 @@ root.add(
                 "Webdings")));
 ```
 
-The font list is embedded directly in the method body, making the code verbose and less intention-revealing.
-
----
-
 ### Refactoring Applied
-
 **Replace Magic Values with Symbolic Constant**
-
-The inline list was extracted into a named constant:
-
-```java
-private static final String[] WEB_SAFE_FONTS = {
-        "Arial",
-        "Arial Black",
-        "Comic Sans MS",
-        "Georgia",
-        "Impact",
-        "Times New Roman",
-        "Trebuchet MS",
-        "Verdana",
-        "Webdings"
-};
-```
-
-and the method now uses that constant.
-
----
-
-### After
 
 ```after
 private static final String[] WEB_SAFE_FONTS = {
@@ -732,43 +531,75 @@ private static final String[] WEB_SAFE_FONTS = {
         "Verdana",
         "Webdings"
 };
+```
 
-...
+and
 
+```after
 root.add(new FontCollectionNode(
         labels.getString("FontCollection.web"),
         collectFamiliesNamed(families, WEB_SAFE_FONTS)));
 ```
 
----
-
 ### Result
 
-This refactoring improves the code in several ways:
-
-- removes a long inline literal list from the method body
-- makes the purpose of the list explicit through a meaningful name
-- improves readability of `setFonts(...)`
-- makes future maintenance easier, because the font set can be updated in one place
-
-This follows the idea of replacing hard-coded values with a **symbolic constant**, which is consistent with the refactoring principles in [Ker05].
+- improves readability
+- avoids duplicated literal lists
+- simplifies maintenance
 
 ---
 
-### Note on Further Improvement
+# Larger Code Smells Identified (Future Refactoring)
 
-This is only a first step.  
-The full `setFonts(...)` method is still quite large because it builds many different font collections in one place.
+During inspection of the feature area, additional design issues were observed.
 
-A possible future improvement would be to continue with:
+## Duplicated behavior in text figure classes
 
-- **Extract Method** for building each collection
-- or moving each font-category list into named constants
+Classes:
 
-That would further reduce the complexity of the method and make the structure of the model-building code easier to understand.
+- `SVGTextFigure`
+- `SVGTextAreaFigure`
 
-## `SVGAttributedFigure`
-## `AbstractAttributedFigure`
-## `SVGAttributeKeys`
-## `AttributeKey`
-## `ButtonFactory`
+share responsibilities for:
+
+- text handling
+- font attributes
+- editing logic
+
+Possible improvement:
+
+```
+Extract Superclass
+AbstractSVGTextFigure
+```
+
+---
+
+## Multiple responsibilities in `FontChooserHandler`
+
+`FontChooserHandler` currently:
+
+- listens to UI events
+- updates figure fonts
+- updates editor defaults
+- manages undoable edits
+
+Possible improvement:
+
+```
+Extract Method
+Extract Class
+```
+
+---
+
+# Conclusion
+
+The refactorings performed in this lab improved the **maintainability, readability, and robustness** of the font formatting feature.
+
+Applied refactorings include:
+
+- **Consolidate Conditional Expression**
+- **Inline Temporary Variable**
+- **Extract Method**
+- **Replace Magic Values with Symbolic Constant**
