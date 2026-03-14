@@ -593,6 +593,26 @@ Extract Class
 
 ---
 
+### Refactoring Strategy
+
+The applied refactorings follow the principles described in **[Ker05] – Refactoring to Patterns**.
+
+The goal was to remove common code smells while preserving program behavior:
+
+- **Long Method → Extract Method**  
+  Large methods were decomposed into smaller helper methods to improve readability and separation of responsibilities.
+
+- **Nested Conditional Logic → Consolidate Conditional Expression**  
+  Reduces deep nesting and simplifies the control flow.
+
+- **Temporary Variables → Inline Temporary Variable**  
+  Eliminates unnecessary variables and makes the code easier to read.
+
+- **Magic Values → Replace Magic Value with Symbolic Constant**  
+  Improves maintainability and avoids hard-coded values inside methods.
+
+These refactorings improve maintainability while keeping the system behavior unchanged.
+
 # Conclusion
 
 The refactorings performed in this lab improved the **maintainability, readability, and robustness** of the font formatting feature.
