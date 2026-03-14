@@ -38,7 +38,6 @@ public class FontChooserHandler extends AbstractSelectedAction
     protected JPopupMenu popupMenu;
     protected int isUpdating;
 
-    //protected Map<AttributeKey, Object> attributes;
     /**
      * Creates a new instance.
      */
@@ -79,16 +78,6 @@ public class FontChooserHandler extends AbstractSelectedAction
             @Override
             public String getPresentationName() {
                 return AttributeKeys.FONT_FACE.getPresentationName();
-                /*
-            String name = (String) getValue(Actions.UNDO_PRESENTATION_NAME_KEY);
-            if (name == null) {
-            name = (String) getValue(AbstractAction.NAME);
-            }
-            if (name == null) {
-            ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.draw.Labels");
-            name = labels.getString("attribute.text");
-            }
-            return name;*/
             }
 
             @Override
@@ -106,7 +95,6 @@ public class FontChooserHandler extends AbstractSelectedAction
             public void redo() {
                 super.redo();
                 for (Figure figure : selectedFigures) {
-                    //restoreData.add(figure.getAttributesRestoreData());
                     figure.willChange();
                     figure.set(key, undoValue);
                     figure.changed();
