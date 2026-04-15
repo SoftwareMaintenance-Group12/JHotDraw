@@ -141,7 +141,7 @@ public class SVGTextAreaFigure extends SVGAttributedFigure
                 if (leftMargin < rightMargin) {
                     float[] tabStops = createTabStops(font, textRect);
                     if (getText() != null) {
-                        appendParagraphs(font, isUnderlined, shape, verticalPos, maxVerticalPos, leftMargin, rightMargin, tabStops, textRect);
+                        appendTextParagraphs(font, isUnderlined, shape, verticalPos, maxVerticalPos, leftMargin, rightMargin, tabStops, textRect);
                     }
                 }
             }
@@ -149,7 +149,7 @@ public class SVGTextAreaFigure extends SVGAttributedFigure
         return cachedTextShape;
     }
 
-    private void appendParagraphs(Font font, boolean isUnderlined, Path2D.Double shape, float verticalPos, float maxVerticalPos, float leftMargin, float rightMargin, float[] tabStops, Rectangle2D.Double textRect) {
+    private void appendTextParagraphs(Font font, boolean isUnderlined, Path2D.Double shape, float verticalPos, float maxVerticalPos, float leftMargin, float rightMargin, float[] tabStops, Rectangle2D.Double textRect) {
         String[] paragraphs = getText().split("\n");
         for (int i = 0; i < paragraphs.length; i++) {
             paragraphs[i] = normalizeParagraph((paragraphs[i]));

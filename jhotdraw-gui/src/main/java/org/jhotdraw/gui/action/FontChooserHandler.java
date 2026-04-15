@@ -53,9 +53,9 @@ public class FontChooserHandler extends AbstractSelectedAction
 
     @Override
     public void actionPerformed(java.awt.event.ActionEvent evt) {
-        if ((evt.getActionCommand() == null && JFontChooser.APPROVE_SELECTION == null) || (evt.getActionCommand() != null && evt.getActionCommand().equals(JFontChooser.APPROVE_SELECTION))) {
+        if (evt.getActionCommand() != null && evt.getActionCommand().equals(JFontChooser.APPROVE_SELECTION)) {
             applySelectedFontToFigures();
-        } else if ((evt.getActionCommand() == null && JFontChooser.CANCEL_SELECTION == null) || (evt.getActionCommand() != null && evt.getActionCommand().equals(JFontChooser.CANCEL_SELECTION))) {
+        } else if (evt.getActionCommand() != null && evt.getActionCommand().equals(JFontChooser.CANCEL_SELECTION)) {
             //nothing to apply
         }
         popupMenu.setVisible(false);
@@ -126,9 +126,7 @@ public class FontChooserHandler extends AbstractSelectedAction
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (isUpdating++ == 0 &&
-            ((evt.getPropertyName() == null && JFontChooser.SELECTED_FONT_PROPERTY == null) ||
-            (evt.getPropertyName() != null && evt.getPropertyName().equals(JFontChooser.SELECTED_FONT_PROPERTY)))) {
+        if (isUpdating++ == 0 && evt.getPropertyName() != null && evt.getPropertyName().equals(JFontChooser.SELECTED_FONT_PROPERTY)) {
 
                 applySelectedFontToFigures();
         }

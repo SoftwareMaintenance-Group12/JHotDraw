@@ -475,8 +475,7 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
         // Collect font families, which are not in one of the other collections
         // (except the collection AllFonts).
         FontCollectionNode others = new FontCollectionNode(labels.getString("FontCollection.other"));
-        HashSet<FontFamilyNode> otherFamilySet = new HashSet<>();
-        otherFamilySet.addAll(families);
+        HashSet<FontFamilyNode> otherFamilySet = new HashSet<>(families);
         for (int i = 1, n = root.getChildCount(); i < n; i++) {
             FontCollectionNode fcn = (FontCollectionNode) root.getChildAt(i);
             for (FontFamilyNode ffn : fcn.families()) {
@@ -495,8 +494,7 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
 
     protected ArrayList<FontFamilyNode> collectFamiliesNamed(ArrayList<FontFamilyNode> families, String... names) {
         ArrayList<FontFamilyNode> coll = new ArrayList<>();
-        HashSet<String> nameMap = new HashSet<>();
-        nameMap.addAll(Arrays.asList(names));
+        HashSet<String> nameMap = new HashSet<>(Arrays.asList(names));
         for (FontFamilyNode family : families) {
             if (nameMap.contains(family.getName())) {
                 coll.add(family.clone());
@@ -513,11 +511,11 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
             node = (MutableTreeNode) node.getParent();
         }
         if (result && (node instanceof FontFamilyNode)) {
-            result &= ((FontFamilyNode) node).isEditable();
+            result = ((FontFamilyNode) node).isEditable();
             node = (MutableTreeNode) node.getParent();
         }
         if (result && (node instanceof FontCollectionNode)) {
-            result &= ((FontCollectionNode) node).isEditable();
+            result = ((FontCollectionNode) node).isEditable();
         }
         return result;
     }

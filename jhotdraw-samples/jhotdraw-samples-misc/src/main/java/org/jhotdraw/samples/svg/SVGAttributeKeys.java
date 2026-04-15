@@ -91,14 +91,14 @@ public class SVGAttributeKeys extends AttributeKeys {
      * Specifies a link.
      * In an SVG file, the link is stored in a "a" element which encloses the
      * figure.
-     * http://www.w3.org/TR/SVGMobile12/linking.html#AElement
+     * <a href="http://www.w3.org/TR/SVGMobile12/linking.html#AElement">...</a>
      */
     public static final AttributeKey<String> LINK = new AttributeKey<>("link", String.class, null, true, LABELS);
     /**
      * Specifies a link target.
      * In an SVG file, the link is stored in a "a" element which encloses the
      * figure.
-     * http://www.w3.org/TR/SVGMobile12/linking.html#AElement
+     * <a href="http://www.w3.org/TR/SVGMobile12/linking.html#AElement">...</a>
      */
     public static final AttributeKey<String> LINK_TARGET = new AttributeKey<>("linkTarget", String.class, null, true, LABELS);
 

@@ -96,7 +96,6 @@ public abstract class AbstractAttributedFigure extends AbstractFigure implements
     public <T> void set(AttributeKey<T> key, T newValue) {
         if (forbiddenAttributes == null
                 || !forbiddenAttributes.contains(key)) {
-            @SuppressWarnings("unchecked")
             T oldValue = key.put(attributes, newValue);
             fireAttributeChanged(key, oldValue, newValue);
         }
