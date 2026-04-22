@@ -5,9 +5,11 @@
 	<artifactId>jhotdraw</artifactId>
 	<version>9.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
+
 	<organization>
 		<name>JHotDraw</name>
 	</organization>
+
 	<repositories>
 		<repository>
 			<id>github</id>
@@ -15,6 +17,7 @@
 			<url>https://maven.pkg.github.com/sweat-tek/MavenRepository</url>
 		</repository>
 	</repositories>
+
 	<licenses>
 		<license>
 			<name>GNU Library or Lesser General Public License (LGPL) V2.1</name>
@@ -25,18 +28,34 @@
 			<url>http://creativecommons.org/licenses/by/2.5/</url>
 		</license>
 	</licenses>
+
 	<developers>
 		<developer>
 			<name>Tobias Warneke</name>
 			<email>t.warneke@gmx.net</email>
 		</developer>
 	</developers>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<junit.version>4.13.2</junit.version>
 	</properties>
+
 	<description>This is a fork of jhotdraw from http://sourceforge.net/projects/jhotdraw</description>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -61,6 +80,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<modules>
 		<module>jhotdraw-core</module>
 		<module>jhotdraw-samples</module>
