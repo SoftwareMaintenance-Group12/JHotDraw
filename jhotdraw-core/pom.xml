@@ -47,14 +47,17 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.tngtech.jgiven</groupId>
+			<artifactId>jgiven-junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	 <dependency>
 	  <groupId>${project.groupId}</groupId>
 	  <artifactId>jhotdraw-actions</artifactId>
 	  <version>${project.version}</version>
 	 </dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
+
 	</dependencies>
 </project>
