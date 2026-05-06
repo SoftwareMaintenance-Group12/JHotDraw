@@ -40,6 +40,18 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
      */
     protected DefaultMutableTreeNode root;
 
+    private static final String[] WEB_SAFE_FONTS = {
+            "Arial",
+            "Arial Black",
+            "Comic Sans MS",
+            "Georgia",
+            "Impact",
+            "Times New Roman",
+            "Trebuchet MS",
+            "Verdana",
+            "Webdings"
+    };
+
     public DefaultFontChooserModel() {
         root = new DefaultMutableTreeNode();
     }
@@ -54,13 +66,12 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
      * <p>
      * Fires treeStructureChanged event on the root node.
      *
-     * @param fonts
+     * @param fonts blabla
      */
     @SuppressWarnings("unchecked")
     public void setFonts(Font[] fonts) {
         ResourceBundleUtil labels = ResourceBundleUtil.getBundle("org.jhotdraw.gui.Labels");
         // collect families and sort them alphabetically
-        ArrayList<FontFamilyNode> families = new ArrayList<>();
         HashMap<String, FontFamilyNode> familyMap = new HashMap<>();
         for (Font f : fonts) {
             String familyName = f.getFamily();
@@ -73,34 +84,16 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
             }
             family.add(new FontFaceNode(f));
         }
-        families.addAll(familyMap.values());
+        ArrayList<FontFamilyNode> families = new ArrayList<>(familyMap.values());
         Collections.sort(families);
         // group families into collections
         root.removeAllChildren();
         root.add(new FontCollectionNode(labels.getString("FontCollection.allFonts"), (ArrayList<FontFamilyNode>) families.clone()));
         // Web-save fonts
-        root.add(
-                new FontCollectionNode(labels.getString("FontCollection.web"), collectFamiliesNamed(families,
-                        "Arial",
-                        "Arial Black",
-                        "Comic Sans MS",
-                        "Georgia",
-                        "Impact",
-                        "Times New Roman",
-                        "Trebuchet MS",
-                        "Verdana",
-                        "Webdings")));
-        /*
-        // PDF Fonts
-        root.add(
-        new FontCollectionNode(labels.getString("FontCollection.pdf"), collectFamiliesNamed(families,
-        "Andale Mono",
-        "Courier",
-        "Helvetica",
-        "Symbol",
-        "Times",
-        "Zapf Dingbats")));
-         */
+        root.add(new FontCollectionNode(
+                labels.getString("FontCollection.web"),
+                collectFamiliesNamed(families, WEB_SAFE_FONTS)));
+
         // Java System fonts
         root.add(
                 new FontCollectionNode(labels.getString("FontCollection.system"), collectFamiliesNamed(families,
@@ -482,8 +475,7 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
         // Collect font families, which are not in one of the other collections
         // (except the collection AllFonts).
         FontCollectionNode others = new FontCollectionNode(labels.getString("FontCollection.other"));
-        HashSet<FontFamilyNode> otherFamilySet = new HashSet<>();
-        otherFamilySet.addAll(families);
+        HashSet<FontFamilyNode> otherFamilySet = new HashSet<>(families);
         for (int i = 1, n = root.getChildCount(); i < n; i++) {
             FontCollectionNode fcn = (FontCollectionNode) root.getChildAt(i);
             for (FontFamilyNode ffn : fcn.families()) {
@@ -502,10 +494,8 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
 
     protected ArrayList<FontFamilyNode> collectFamiliesNamed(ArrayList<FontFamilyNode> families, String... names) {
         ArrayList<FontFamilyNode> coll = new ArrayList<>();
-        HashSet<String> nameMap = new HashSet<>();
-        nameMap.addAll(Arrays.asList(names));
+        HashSet<String> nameMap = new HashSet<>(Arrays.asList(names));
         for (FontFamilyNode family : families) {
-            String fName = family.getName();
             if (nameMap.contains(family.getName())) {
                 coll.add(family.clone());
             }
@@ -521,11 +511,11 @@ public class DefaultFontChooserModel extends AbstractFontChooserModel {
             node = (MutableTreeNode) node.getParent();
         }
         if (result && (node instanceof FontFamilyNode)) {
-            result &= ((FontFamilyNode) node).isEditable();
+            result = ((FontFamilyNode) node).isEditable();
             node = (MutableTreeNode) node.getParent();
         }
         if (result && (node instanceof FontCollectionNode)) {
-            result &= ((FontCollectionNode) node).isEditable();
+            result = ((FontCollectionNode) node).isEditable();
         }
         return result;
     }

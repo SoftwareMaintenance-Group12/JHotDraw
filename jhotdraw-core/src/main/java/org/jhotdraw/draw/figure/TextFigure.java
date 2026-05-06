@@ -111,7 +111,7 @@ public class TextFigure extends AbstractAttributedDecoratedFigure
     protected TextLayout getTextLayout() {
         if (textLayout == null) {
             String text = getText();
-            if (text == null || text.length() == 0) {
+            if (text == null || text.isEmpty()) {
                 text = " ";
             }
             FontRenderContext frc = getFontRenderContext();

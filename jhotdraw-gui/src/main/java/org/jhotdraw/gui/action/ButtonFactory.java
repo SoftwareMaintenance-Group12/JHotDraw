@@ -432,7 +432,7 @@ public class ButtonFactory {
         final JPopupButton zoomPopupButton = new JPopupButton();
         labels.configureToolBarButton(zoomPopupButton, "view.zoomFactor");
         zoomPopupButton.setFocusable(false);
-        if (editor.getDrawingViews().size() == 0) {
+        if (editor.getDrawingViews().isEmpty()) {
             zoomPopupButton.setText("100 %");
         } else {
             zoomPopupButton.setText((int) (editor.getDrawingViews().iterator().next().getScaleFactor() * 100) + " %");
@@ -1375,7 +1375,6 @@ public class ButtonFactory {
         JPopupButton strokeDashesPopupButton = new JPopupButton();
         labels.configureToolBarButton(strokeDashesPopupButton, "attribute.strokeDashes");
         strokeDashesPopupButton.setFocusable(false);
-        //strokeDashesPopupButton.setColumnCount(2, false);
         for (double[] dashe : dashes) {
             float[] fdashes;
             if (dashe == null) {

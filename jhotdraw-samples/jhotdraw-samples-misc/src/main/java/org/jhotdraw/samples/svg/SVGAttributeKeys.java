@@ -29,12 +29,12 @@ public class SVGAttributeKeys extends AttributeKeys {
      * Specifies the title of an SVG drawing.
      * This attribute can be null, to indicate that the drawing has no title.
      */
-    public static final AttributeKey<String> TITLE = new AttributeKey<String>("title", String.class, null, true, LABELS);
+    public static final AttributeKey<String> TITLE = new AttributeKey<>("title", String.class, null, true, LABELS);
     /**
      * Specifies the description of an SVG drawing.
      * This attribute can be null, to indicate that the drawing has no description.
      */
-    public static final AttributeKey<String> DESCRIPTION = new AttributeKey<String>("description", String.class, null, true, LABELS);
+    public static final AttributeKey<String> DESCRIPTION = new AttributeKey<>("description", String.class, null, true, LABELS);
     /**
      * Specifies the viewport-fill of an SVG viewport.
      * This attribute can be null, to indicate that the viewport has no viewport-fill.
@@ -55,7 +55,7 @@ public class SVGAttributeKeys extends AttributeKeys {
     /**
      * Specifies the text anchor of a SVGText figure.
      */
-    public static final AttributeKey<TextAnchor> TEXT_ANCHOR = new AttributeKey<TextAnchor>("textAnchor", TextAnchor.class, TextAnchor.START, false, LABELS);
+    public static final AttributeKey<TextAnchor> TEXT_ANCHOR = new AttributeKey<>("textAnchor", TextAnchor.class, TextAnchor.START, false, LABELS);
 
     public enum TextAlign {
         START, CENTER, END
@@ -63,44 +63,44 @@ public class SVGAttributeKeys extends AttributeKeys {
     /**
      * Specifies the text alignment of a SVGText figure.
      */
-    public static final AttributeKey<TextAlign> TEXT_ALIGN = new AttributeKey<TextAlign>("textAlign", TextAlign.class, TextAlign.START, false, LABELS);
+    public static final AttributeKey<TextAlign> TEXT_ALIGN = new AttributeKey<>("textAlign", TextAlign.class, TextAlign.START, false, LABELS);
     /**
      * Specifies the fill gradient of a SVG figure.
      */
-    public static final AttributeKey<Gradient> FILL_GRADIENT = new AttributeKey<Gradient>("fillGradient", Gradient.class, null, true, LABELS);
+    public static final AttributeKey<Gradient> FILL_GRADIENT = new AttributeKey<>("fillGradient", Gradient.class, null, true, LABELS);
     /**
      * Specifies the fill opacity of a SVG figure.
      * This is a value between 0 and 1 whereas 0 is translucent and 1 is fully opaque.
      */
-    public static final AttributeKey<Double> FILL_OPACITY = new AttributeKey<Double>("fillOpacity", Double.class, 1d, false, LABELS);
+    public static final AttributeKey<Double> FILL_OPACITY = new AttributeKey<>("fillOpacity", Double.class, 1d, false, LABELS);
     /**
      * Specifies the overall opacity of a SVG figure.
      * This is a value between 0 and 1 whereas 0 is translucent and 1 is fully opaque.
      */
-    public static final AttributeKey<Double> OPACITY = new AttributeKey<Double>("opacity", Double.class, 1d, false, LABELS);
+    public static final AttributeKey<Double> OPACITY = new AttributeKey<>("opacity", Double.class, 1d, false, LABELS);
     /**
      * Specifies the stroke gradient of a SVG figure.
      */
-    public static final AttributeKey<Gradient> STROKE_GRADIENT = new AttributeKey<Gradient>("strokeGradient", Gradient.class, null, true, LABELS);
+    public static final AttributeKey<Gradient> STROKE_GRADIENT = new AttributeKey<>("strokeGradient", Gradient.class, null, true, LABELS);
     /**
      * Specifies the stroke opacity of a SVG figure.
      * This is a value between 0 and 1 whereas 0 is translucent and 1 is fully opaque.
      */
-    public static final AttributeKey<Double> STROKE_OPACITY = new AttributeKey<Double>("strokeOpacity", Double.class, 1d, false, LABELS);
+    public static final AttributeKey<Double> STROKE_OPACITY = new AttributeKey<>("strokeOpacity", Double.class, 1d, false, LABELS);
     /**
      * Specifies a link.
      * In an SVG file, the link is stored in a "a" element which encloses the
      * figure.
-     * http://www.w3.org/TR/SVGMobile12/linking.html#AElement
+     * <a href="http://www.w3.org/TR/SVGMobile12/linking.html#AElement">...</a>
      */
-    public static final AttributeKey<String> LINK = new AttributeKey<String>("link", String.class, null, true, LABELS);
+    public static final AttributeKey<String> LINK = new AttributeKey<>("link", String.class, null, true, LABELS);
     /**
      * Specifies a link target.
      * In an SVG file, the link is stored in a "a" element which encloses the
      * figure.
-     * http://www.w3.org/TR/SVGMobile12/linking.html#AElement
+     * <a href="http://www.w3.org/TR/SVGMobile12/linking.html#AElement">...</a>
      */
-    public static final AttributeKey<String> LINK_TARGET = new AttributeKey<String>("linkTarget", String.class, null, true, LABELS);
+    public static final AttributeKey<String> LINK_TARGET = new AttributeKey<>("linkTarget", String.class, null, true, LABELS);
 
     /**
      * Gets the fill paint for the specified figure based on the attributes
@@ -113,12 +113,10 @@ public class SVGAttributeKeys extends AttributeKeys {
             return f.get(FILL_GRADIENT).getPaint(f, opacity);
         }
         Color color = f.get(FILL_COLOR);
-        if (color != null) {
-            if (opacity != 1) {
-                color = new Color(
-                        (color.getRGB() & 0xffffff) | (int) (opacity * 255) << 24,
-                        true);
-            }
+        if (color != null && opacity != 1) {
+            color = new Color(
+                    (color.getRGB() & 0xffffff) | (int) (opacity * 255) << 24,
+                    true);
         }
         return color;
     }
@@ -134,12 +132,10 @@ public class SVGAttributeKeys extends AttributeKeys {
             return f.get(STROKE_GRADIENT).getPaint(f, opacity);
         }
         Color color = f.get(STROKE_COLOR);
-        if (color != null) {
-            if (opacity != 1) {
-                color = new Color(
-                        (color.getRGB() & 0xffffff) | (int) (opacity * 255) << 24,
-                        true);
-            }
+        if (color != null && opacity != 1){
+            color = new Color(
+                    (color.getRGB() & 0xffffff) | (int) (opacity * 255) << 24,
+                    true);
         }
         return color;
     }
