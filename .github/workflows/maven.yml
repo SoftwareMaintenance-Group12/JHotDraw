@@ -1,33 +1,41 @@
-# Name shown in the GitHub Actions tab. # This workflow is used for Continuous Integration.
+# This workflow builds and tests the JHotDraw Maven project using GitHub Actions.
+# It supports the Lab 5 goal: setting up a simple Continuous Integration pipeline.
+
 name: Java CI with Maven
 
-# This decides when the CI pipeline should run. Here it runs automatically when a pull request targets the main branch. # Example: text-edit -> main
+# The workflow runs when code is pushed to main/develop,
+# and when a pull request targets main/develop.
+# This matches the course GitHub workflow where feature branches are merged into develop.
 on:
+  push:
+    branches: [ "main", "develop" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main", "develop" ]
 
-jobs: # Jobs are the tasks GitHub Actions performs.
-  build: # This job builds the project and runs the tests.
-    runs-on: ubuntu-latest # GitHub will run the job on a Linux virtual machine.
+jobs:
+  build:
+    # GitHub runs this job on a Linux virtual machine.
+    runs-on: ubuntu-latest
 
-    steps:  # Steps are executed in order.
-      # Step 1: Download the repository code into the GitHub Actions runner.
+    steps:
+      # Step 1: Check out the repository code so the runner can access it.
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # Step 2: Install Java so Maven can compile and test the project.
+      # Step 2: Install and configure JDK 11.
       # JDK 11 is used because the introduction lab specifies Maven 3.8.x based on JDK11.
-      # The root pom.xml still defines maven.compiler.source = 1.8 and maven.compiler.target = 1.8, so the code is compiled with Java 8 compatibility.
-      # The Maven cache makes later CI runs faster by reusing downloaded dependencies.
-      - name: Set up JDK
+      # The root pom.xml still defines Java 8 source/target compatibility:
+      # maven.compiler.source = 1.8
+      # maven.compiler.target = 1.8
+      - name: Set up JDK 11
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '11'
           cache: maven
 
-      # Step 3: Build the Maven project and run the automated tests.
-      # -B means batch mode, which is recommended for CI because it runs non-interactively.
-      # mvn test compiles the project and executes the test phase.
+      # Step 3: Build the project and run tests using Maven.
+      # -B runs Maven in batch mode, which is recommended for CI.
+      # verify runs the Maven lifecycle through compilation, testing, and verification.
       - name: Build and test with Maven
-        run: mvn -B test
+        run: mvn -B verify --file pom.xml
