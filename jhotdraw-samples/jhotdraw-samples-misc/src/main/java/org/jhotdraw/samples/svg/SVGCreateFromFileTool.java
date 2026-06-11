@@ -130,7 +130,7 @@ public class SVGCreateFromFileTool extends CreationTool {
         }
     }
 
-    private boolean isSvgFile(File file) {
+    boolean isSvgFile(File file) {
         String fileName = file.getName().toLowerCase(Locale.ENGLISH);
         return fileName.endsWith(".svg") || fileName.endsWith(".svgz");
     }
@@ -161,7 +161,7 @@ public class SVGCreateFromFileTool extends CreationTool {
         }.execute();
     }
 
-    private InputFormat createInputFormat(File file) {
+    InputFormat createInputFormat(File file) {
         String fileName = file.getName().toLowerCase(Locale.ENGLISH);
         return fileName.endsWith(".svg") ? new SVGInputFormat() : new SVGZInputFormat();
     }
