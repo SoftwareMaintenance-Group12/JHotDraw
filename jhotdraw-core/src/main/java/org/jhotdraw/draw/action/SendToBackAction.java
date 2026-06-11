@@ -115,13 +115,11 @@ public class SendToBackAction extends AbstractSelectedAction {
      * @param figures figures to send to back
      */
     public static void sendToBack(DrawingView view, Collection<Figure> figures) {
-        // Get the drawing model that stores figures in z-order.
-        Drawing drawing = view.getDrawing();
+        assert view != null : "DrawingView must not be null";
+        assert figures != null : "Figures collection must not be null";
 
+        Drawing drawing = view.getDrawing();
         for (Figure figure : drawing.sort(figures)) { // Refactored: Sorted figures to maintain relative Z-order
-            // Delegate the z-order change to the drawing implementation.
-            // In a typical drawing implementation (e.g. AbstractCompositeFigure),
-            // this will remove the figure from its current index and insert it at 0.
             drawing.sendToBack(figure);
         }
     }

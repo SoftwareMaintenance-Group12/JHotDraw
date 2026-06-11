@@ -106,10 +106,9 @@ public class BringToFrontAction extends AbstractSelectedAction {
      * @param figures the figures to bring to front
      */
     public static void bringToFront(DrawingView view, Collection<Figure> figures) {
+        assert view != null : "DrawingView must not be null";
+        assert figures != null : "Figures collection must not be null";
         Drawing drawing = view.getDrawing();
-
-        // Sort selected figures by current z-order from back to front before
-        // moving them. This preserves the relative order of the selected items.
         for (Figure figure : drawing.sort(figures)) {
             drawing.bringToFront(figure);
         }
