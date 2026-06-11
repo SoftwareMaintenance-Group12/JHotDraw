@@ -118,7 +118,7 @@ public class SendToBackAction extends AbstractSelectedAction {
         // Get the drawing model that stores figures in z-order.
         Drawing drawing = view.getDrawing();
 
-        for (Figure figure : figures) { // XXX Shouldn't the figures be sorted here back to front?
+        for (Figure figure : drawing.sort(figures)) { // Refactored: Sorted figures to maintain relative Z-order
             // Delegate the z-order change to the drawing implementation.
             // In a typical drawing implementation (e.g. AbstractCompositeFigure),
             // this will remove the figure from its current index and insert it at 0.
